@@ -403,4 +403,59 @@ function update_allowance(int $group_id = 0, int $user_id = 0, int $permission_i
 	}
 }
 
+
+function delete_allowance(int $group_id = 0, int $user_id = 0, int $permission_id)
+{
+	if (empty($group_id) && empty($user_id))
+	{
+		return false;
+	}
+	
+	if (!permission_exists($permission_id))
+	{
+		return false;
+	}
+	
+	global $sql;
+	
+	if (!empty($user_id))
+	{
+		$query = "DELETE FROM ".GROUP_PERMISSIONS_TABLE." WHERE user_id = ? AND permission_id = ?";
+		$sql->setQuery($query);
+		$stmt = $sql->prepare($sql->getConnectionID());
+		$stmt->bind_param("ii", $user_id, $permission_id);
+		$stmt->execute();
+		$rows = mysqli_affected_rows($sql->getConnectionID());
+		
+		if ($rows < 1)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	else if (!empty($group_id))
+	{
+		$query = "DELETE FROM ".GROUP_PERMISSIONS_TABLE." WHERE group_id = ? AND permission_id = ?";
+		$sql->setQuery($query);
+		$stmt = $sql->prepare($sql->getConnectionID());
+		$stmt->bind_param("ii", $group_id, $permission_id);
+		$stmt->execute();
+		$rows = mysqli_affected_rows($sql->getConnectionID());
+		
+		if ($rows < 1)
+		{
+			return false;
+		}
+		
+		else
+		{
+			return true;
+		}
+	}
+}
+
 ?>
