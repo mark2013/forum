@@ -272,9 +272,8 @@ function insert(array $data, bool $allowed):bool
 		
 		//связываем параметры
 		$stmt->bind_param("iiisi", $group_id, $user_id, $permission_id, $allowed_string, $time_recorded);
-		echo $time_recorded;
 		$stmt->execute();
-		$rows = mysqli_affected_rows($sql->getConnectionID());
+		$rows = $sql->getAffectedRows($sql->getConnectionID());
 		if ($rows > 0)
 		{
 			return true;
@@ -314,7 +313,7 @@ function insert(array $data, bool $allowed):bool
 			
 			$stmt->bind_param("iiisi", $group_id, $user_id, $permission_id, $allowed_string, $time_recorded);
 			$stmt->execute();
-			$rows = mysqli_affected_rows($sql->getConnectionID());
+			$rows = $sql->getAffectedRows($sql->getConnectionID());
 			if ($rows > 0)
 			{
 				return true;
@@ -369,7 +368,7 @@ function update_allowance(int $group_id = 0, int $user_id = 0, int $permission_i
 		$stmt = $sql->prepare($sql->getConnectionID());
 		$stmt->bind_param("siii", $allow_string, $time_recorded, $user_id, $permission_id);
 		$stmt->execute();
-		$rows = mysqli_affected_rows($sql->getConnectionID());
+		$rows = $sql->getAffectedRows($sql->getConnectionID());
 		
 		if ($rows > 0)
 		{
@@ -389,7 +388,7 @@ function update_allowance(int $group_id = 0, int $user_id = 0, int $permission_i
 		$stmt = $sql->prepare($sql->getConnectionID());
 		$stmt->bind_param("siii", $allow_string, $time_recorded, $group_id, $permission_id);
 		$stmt->execute();
-		$rows = mysqli_affected_rows($sql->getConnectionID());
+		$rows = $sql->getAffectedRows($sql->getConnectionID());
 		
 		if ($rows > 0)
 		{
@@ -425,7 +424,7 @@ function delete_allowance(int $group_id = 0, int $user_id = 0, int $permission_i
 		$stmt = $sql->prepare($sql->getConnectionID());
 		$stmt->bind_param("ii", $user_id, $permission_id);
 		$stmt->execute();
-		$rows = mysqli_affected_rows($sql->getConnectionID());
+		$rows = $sql->getAffectedRows($sql->getConnectionID());
 		
 		if ($rows < 1)
 		{
@@ -444,7 +443,7 @@ function delete_allowance(int $group_id = 0, int $user_id = 0, int $permission_i
 		$stmt = $sql->prepare($sql->getConnectionID());
 		$stmt->bind_param("ii", $group_id, $permission_id);
 		$stmt->execute();
-		$rows = mysqli_affected_rows($sql->getConnectionID());
+		$rows = $sql->getAffectedRows($sql->getConnectionID());
 		
 		if ($rows < 1)
 		{
