@@ -4,7 +4,7 @@
 function getAll()
 {
 	global $sql;
-	$query = "SELECT * FROM forums";
+	$query = "SELECT * FROM ".FORUMS_TABLE;
 	$sql->query($sql->getConnectionID(), $query);
 	
 	$ret = array();
