@@ -262,6 +262,11 @@ class MySQLi extends \DB\Database {
        public function getLastID($conn_id):int {
            return mysqli_insert_id($conn_id);
        }
+       
+       public function getAffectedRows($conn_id):int
+       {
+    		return mysqli_affected_rows($conn_id);
+       }
      
      
     }
