@@ -10,6 +10,7 @@
  * permission_id_to_string(int $permission_id):string;
  * permission_string_to_id(string $permission):int;
  * insert(array $data, bool $allowed):bool;
+ * update_allowance(int $group_id = 0, int $user_id = 0, int $permission_id, bool $allowed):bool;
 */ 
 
 /**
@@ -328,8 +329,78 @@ function insert(array $data, bool $allowed):bool
 	
 }
 
-
-function update_allowance(int $group_id = 0, int $user_id = 0, int $permission_id, bool $allowed)
+/**
+ * Обновляет конкретное разрешение для заданного пользователя или группы. Несмотря на то, что оба первых параметра
+ * являются необязательными, они не могут быть опущены одновременно, и это запрограммировано в коде.
+ * Возвращает true, если обновление удалось, false - если в процессе произошла какая-то ошибка.
+ *
+ * @param int $group_id = 0 - ID группы, если применимо
+ * @param int $user_id = 0  - ID пользователя, если применимо
+ * @param int $permission_id - ID разрешения, которое требуется обновить
+ * @return bool
+*/ 
+function update_allowance(int $group_id = 0, int $user_id = 0, int $permission_id, bool $allowed):bool
 {
-    
+	/**
+	 * Не допускаем одновременно двух НЕ переданных параметров
+	*/ 
+	if (empty($user_id) && empty($group_id))
+	{
+		return false;
+	}
+	
+	/**
+	 * Если не существует разрешения с таким номером - тоже делать нечего
+	*/ 
+	if (!permission_exists($permission_id))
+	{
+		return false;
+	}
+	//генерируем строку для последующего обновления базы
+	$time_recorded = time();
+	$allow_string = generate_allowance_string($allowed, $time_recorded);
+	
+	global $sql;
+	
+	if (!empty($user_id))
+	{
+		$query = "UPDATE ".GROUP_PERMISSIONS_TABLE." SET is_permitted = ?, time_recorded = ? WHERE user_id = ? AND permission_id = ?";
+		$sql->setQuery($query);
+		$stmt = $sql->prepare($sql->getConnectionID());
+		$stmt->bind_param("siii", $allow_string, $time_recorded, $user_id, $permission_id);
+		$stmt->execute();
+		$rows = mysqli_affected_rows($sql->getConnectionID());
+		
+		if ($rows > 0)
+		{
+			return true;
+		}
+		
+		else
+		{
+			return false;
+		}
+	}
+	
+	else if (!empty($group_id))
+	{
+		$query = "UPDATE ".GROUP_PERMISSIONS_TABLE." SET is_permitted = ?, time_recorded = ? WHERE group_id = ? AND permission_id = ?";
+		$sql->setQuery($query);
+		$stmt = $sql->prepare($sql->getConnectionID());
+		$stmt->bind_param("siii", $allow_string, $time_recorded, $group_id, $permission_id);
+		$stmt->execute();
+		$rows = mysqli_affected_rows($sql->getConnectionID());
+		
+		if ($rows > 0)
+		{
+			return true;
+		}
+		
+		else
+		{
+			return false;
+		}
+	}
 }
+
+?>
