@@ -17,7 +17,8 @@ CREATE TABLE users (
         is_banned tinyint(1) default 0,
         post_count int unsigned not null default 0,
         topics_count int unsigned not null default 0,
-        KEY group_id (group_id)
+        KEY group_id (group_id),
+        UNIQUE KEY login (login)
 );
 
 /**
@@ -40,7 +41,8 @@ CREATE TABLE groups (
         group_id int unsigned not null auto_increment primary key,
         group_name varchar(20) character set utf8 not null,
         group_description text character set utf8 not null default '',
-        users_count int unsigned not null default 0
+        users_count int unsigned not null default 0,
+        UNIQUE KEY u_group (group_name)
 );
 
 /**
@@ -49,14 +51,11 @@ CREATE TABLE groups (
 DROP TABLE IF EXISTS permissions;
 CREATE TABLE permissions (
         permission_id int unsigned not null auto_increment primary key,
-        permission varchar(50) character set utf8 not null
+        permission varchar(50) character set utf8 not null,
+        UNIQUE KEY perm (permission)
 );
 
 DROP TABLE IF EXISTS permissions_objects;
-CREATE TABLE permissions_objects (
-        permission_object_id int unsigned not null auto_increment primary key,
-        permission_object_name varchar(40) character set utf8 not null
-);
 
 DROP TABLE IF EXISTS group_permissions;
 CREATE TABLE group_permissions (
