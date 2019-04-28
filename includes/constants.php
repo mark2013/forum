@@ -10,6 +10,7 @@ define('ATT_GROUPS_TABLE', 'attachment_groups');
 define('FORUMS_TABLE', 'forums');
 define('GROUPS_TABLE', 'groups');
 define('GROUP_PERMISSIONS_TABLE', 'group_permissions');
+define('PERMISSIONS_TABLE', 'permissions');
 define('PERMISSIONS_OBJECTS_TABLE', 'permissions_objects');
 define('POSTS_TABLE', 'posts');
 define('POST_ATT_TABLE', 'post_attachments');
