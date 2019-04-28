@@ -42,7 +42,7 @@ class Forum {
 	{
 		global $sql;
 		
-		$query = "SELECT forum_id FROM forums WHERE forum_id = ?";
+		$query = "SELECT forum_id FROM ".FORUMS_TABLE." WHERE forum_id = ?";
 		$sql->setQuery($query);
 		$stmt = $sql->prepare($sql->getConnectionID());
 		$stmt->bind_param("i", $this->forum_id);
@@ -68,7 +68,7 @@ class Forum {
 	protected function get_topics_count ():int
 	{
 		global $sql;
-		$query = "SELECT COUNT(topic_id) AS topics_count FROM topics WHERE p_forum_id = ?";
+		$query = "SELECT COUNT(topic_id) AS topics_count FROM ".TOPICS_TABLE." WHERE p_forum_id = ?";
 		$sql->setQuery($query);
 		$stmt = $sql->prepare($sql->getConnectionID());
 		$stmt->bind_param("i", $this->forum_id);
@@ -88,7 +88,7 @@ class Forum {
 	protected function get_messages_count():int
 	{
 		global $sql;
-		$query = "SELECT COUNT(post_id) AS posts_count FROM posts WHERE p_forum_id = ?";
+		$query = "SELECT COUNT(post_id) AS posts_count FROM ".POSTS_TABLE." WHERE p_forum_id = ?";
 		$sql->setQuery($query);
 		$stmt = $sql->prepare($sql->getConnectionID());
 		$stmt->bind_param("i", $this->forum_id);
@@ -108,7 +108,7 @@ class Forum {
 	protected function is_locked():bool
 	{
 		global $sql;
-		$query = "SELECT is_locked FROM forums WHERE forum_id = '".$this->forum_id."'";
+		$query = "SELECT is_locked FROM ".FORUMS_TABLE." WHERE forum_id = '".$this->forum_id."'";
 		$sql->query($sql->getConnectionID(), $query);
 		$row = $sql->getRow();
 		
@@ -141,7 +141,7 @@ class Forum {
 		if (!$this->is_locked())
 		{
 			global $sql;
-			$query = "UPDATE forums SET is_locked = 1 WHERE forum_id = ?";
+			$query = "UPDATE ".FORUMS_TABLE." SET is_locked = 1 WHERE forum_id = ?";
 			$sql->setQuery($query);
 			$stmt = $sql->prepare($sql->getConnectionID());
 			$stmt->bind_param("i", $this->forum_id);
@@ -168,7 +168,7 @@ class Forum {
 		if ($this->is_locked())
 		{
 			global $sql;
-			$query = "UPDATE forums SET is_locked = 0 WHERE forum_id = ?";
+			$query = "UPDATE ".FORUMS_TABLE." SET is_locked = 0 WHERE forum_id = ?";
 			$sql->setQuery($query);
 			$stmt = $sql->prepare($sql->getConnectionID());
 			$stmt->bind_param("i", $this->forum_id);
