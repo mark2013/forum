@@ -51,15 +51,8 @@ class Forum {
 		
 		$rows = $stmt->num_rows;
 		
-		if ($rows < 1)
-		{
-			return false;
-		}
+		return ($rows < 1) ? false : true;
 		
-		else
-		{
-			return true;
-		}
 	}
 	
 	/**
@@ -112,15 +105,8 @@ class Forum {
 		$sql->query($sql->getConnectionID(), $query);
 		$row = $sql->getRow();
 		
-		if ($row[0] == '0')
-		{
-			return false;
-		}
+		return ($row[0] == '0') ? false : true;
 		
-		else
-		{
-			return true;
-		}
 	}
 	
 	public function __construct(int $forum_id)
@@ -146,15 +132,8 @@ class Forum {
 			$stmt = $sql->prepare($sql->getConnectionID());
 			$stmt->bind_param("i", $this->forum_id);
 			$stmt->execute();
-			if (!$sql->wasError($sql->getConnectionID()))
-			{
-				return true;
-			}
-			else
-			{
-				echo $sql->getError();
-				return false;
-			}
+			
+			return (!$sql->wasError($sql->getConnectionID())) : true : false;
 		}
 		
 		else
@@ -174,15 +153,8 @@ class Forum {
 			$stmt->bind_param("i", $this->forum_id);
 			$stmt->execute();
 			
-			if (!$sql->wasError($sql->getConnectionID()))
-			{
-				return true;
-			}
+			return (!$sql->wasError($sql->getConnectionID())) : true : false;
 			
-			else
-			{
-				return false;
-			}
 		}
 		
 		else
