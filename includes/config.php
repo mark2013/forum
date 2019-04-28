@@ -21,8 +21,8 @@ $_SESSION['user_id'] = 0;
 //конфигурационные переменные
 $config['db']['server']     =   'localhost';
 $config['db']['user']       =   'root';
-$config['db']['password']   =   'drp72TuKr1sE52kMs';
-$config['db']['dbname']     =   'forum_php';
+$config['db']['password']   =   '';
+$config['db']['dbname']     =   '';
 $config['db']['port']       =   3306;
 $config['db']['persistent'] =   false;
 $config['db']['layer']      =   'mysqli';
