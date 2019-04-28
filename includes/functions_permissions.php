@@ -67,7 +67,7 @@ function allowed(int $group_id = 0, int $user_id = 0, int $permission_id):bool
 	
 	if (!empty($user_id))
 	{
-		$query = "SELECT is_permitted, time_recorded FROM group_permissions WHERE user_id = ?";
+		$query = "SELECT is_permitted, time_recorded FROM ".GROUP_PERMISSIONS_TABLE." WHERE user_id = ?";
 		$sql->setQuery($query);
 		$stmt = $sql->prepare($sql->getConnectionID());
 		$stmt->bind_param("i", $user_id);
@@ -92,7 +92,7 @@ function allowed(int $group_id = 0, int $user_id = 0, int $permission_id):bool
 	
 	else if (!empty($group_id))
 	{
-		$query = "SELECT is_permitted, time_recorded FROM group_permissions WHERE group_id = ?";
+		$query = "SELECT is_permitted, time_recorded FROM ".GROUP_PERMISSIONS_TABLE." WHERE group_id = ?";
 		$sql->setQuery($query);
 		$stmt = $sql->prepare($sql->getConnectionID());
 		$stmt->bind_param("i", $group_id);
@@ -124,7 +124,7 @@ function allowed(int $group_id = 0, int $user_id = 0, int $permission_id):bool
 function permission_exists(int $permission_id):bool
 {
 	global $sql;
-	$query = "SELECT permission_id FROM permissions WHERE permission_id = ?";
+	$query = "SELECT permission_id FROM ".PERMISSIONS_TABLE." WHERE permission_id = ?";
 	$sql->setQuery($query);
 	$stmt = $sql->prepare($sql->getConnectionID());
 	$stmt->bind_param("i", $permission_id);
@@ -158,7 +158,7 @@ function permission_id_to_string(int $permission_id):string
 	}
 	
 	global $sql;
-	$query = "SELECT permission FROM permissions WHERE permission_id = ?";
+	$query = "SELECT permission FROM ".PERMISSIONS_TABLE." WHERE permission_id = ?";
 	$sql->setQuery($query);
 	$stmt = $sql->prepare($sql->getConnectionID());
 	$stmt->bind_param("i", $permission_id);
@@ -179,7 +179,7 @@ function permission_id_to_string(int $permission_id):string
 function permission_string_to_id(string $permission):int
 {
 	global $sql;
-	$query = "SELECY permission_if FROM permissions WHERE permission = ?";
+	$query = "SELECY permission_if FROM ".PERMISSIONS_TABLE." WHERE permission = ?";
 	$p = filter_var($permission, FILTER_SANITIZE_STRING);
 	$sql->setQuery($query);
 	$stmt = $sql->prepare($sql->getConnectionID());
@@ -222,8 +222,6 @@ function insert(array $data, bool $allowed):bool
 	$group_id	= isset($data['group_id']) ? $data['group_id'] : 0;
 	$permission_id  = isset($data['permission_id']) ? $data['permission_id'] : 0;
 	
-//	$time_recorded 		= time();
-//	$allowed_string 	= generate_allowance_string($allowed, $time);
 	/**
 	 * Если не передан ID пользователя, разрешение действует для группы
 	 * Если не передан ID группы, разрешение действует для пользователя
@@ -245,7 +243,7 @@ function insert(array $data, bool $allowed):bool
 	*/ 
 	if ($user_id > 0)
 	{
-	    $query = "SELECT user_id FROM users WHERE user_id = ?";
+	    $query = "SELECT user_id FROM ".USERS_TABLE." WHERE user_id = ?";
 	    $sql->setQuery($query);
 	    $stmt = $sql->prepare($sql->getConnectionID());
 	    $stmt->bind_param("i", $user_id);
@@ -264,7 +262,7 @@ function insert(array $data, bool $allowed):bool
 	    //иначе - начинаем процесс вставки значений
 	    else
 	    {
-		$query = "INSERT INTO group_permissions (group_id, user_id, permission_id, is_permitted, time_recorded) VALUES (?, ?, ?, ?, ?)";
+		$query = "INSERT INTO ".GROUP_PERMISSIONS_TABLE." (group_id, user_id, permission_id, is_permitted, time_recorded) VALUES (?, ?, ?, ?, ?)";
 		$sql->setQuery($query);
 		$group_id = 0;
 		$time_recorded = time();
@@ -290,7 +288,7 @@ function insert(array $data, bool $allowed):bool
 	
 	else if ($group_id > 0)
 	{
-		$query = "SELECT group_id FROM groups WHERE group_id = ?";
+		$query = "SELECT group_id FROM ".GROUPS_TABLE." WHERE group_id = ?";
 		$sql->setQuery($query);
 		$stmt = $sql->prepare($sql->getConnectionID());
 		$stmt->bind_param("i", $group_id);
@@ -306,7 +304,7 @@ function insert(array $data, bool $allowed):bool
 		
 		else
 		{
-			$query = "INSERT INTO group_permissions (group_id, user_id, permission_id, is_permitted, time_recorded) VALUES (?, ?, ?, ?, ?)";
+			$query = "INSERT INTO ".GROUP_PERMISSIONS_TABLE." (group_id, user_id, permission_id, is_permitted, time_recorded) VALUES (?, ?, ?, ?, ?)";
 			$sql->setQuery($query);
 			$user_id = 0;
 			$time_recorded = time();
