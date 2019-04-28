@@ -45,11 +45,11 @@ class User {
      * Проверяет существование пользователя с идентификатором $id. 
      * Возвращает false если пользователя нет, true - в противном случае
      * 
-     * @param type $id ID пользователя
+     * @param int $id ID пользователя
      * @return boolean
      * @static
      */
-    public static function exists(int $id) {
+    public static function exists(int $id):bool {
         
         $query = 'SELECT user_id FROM '.USERS_TABLE.' WHERE user_id = ?';
         global $sql;
@@ -116,7 +116,13 @@ class User {
         
     }
     
-    public function getUserLogin():string {
+    /**
+     * Получает логин пользователя с ID = $id
+     *
+     * @param int $id = 0 ID пользователя
+     * @return string
+    */ 
+    public function getUserLogin(int $id = 0):string {
         
         //если в id передан не ноль, значит зашёл не анонимный пользователь
         if ($id !== 0) {
@@ -143,29 +149,41 @@ class User {
         }
         
     }
-        
-    public function getUserGroup($id = -1) {
+    
+    /**
+     * Получает группу пользователя
+     * 
+     * @param int $id = -1 ID пользователя
+     * @return int
+    */ 
+    public function getUserGroup($id = -1):int {
         
         if ($id == -1) {
             $id = $this->user_id;
         }
         
+        global $sql;
         $query = "SELECT group_id FROM ".USERS_TABLE." WHERE user_id = ".(int)$id;
-        $this->db->query($this->db->getConnectionId(), $query);
+        $sql->query($sql->getConnectionID(), $query);
         
-        $result = $this->db->getRow();
+        $result = $sql->getRow(true);
         return (int)$result['group_id'];
     }
     
+    /**
+     * Вытаскивает дату регистрации пользователя
+     * 
+    */
     public function get_user_date_registered() {
         
         if (!self::exists($this->id)) {
             return false;
         }
         
+        global $sql;
         $query = "SELECT date_registered FROM ".USERS_TABLE." WHERE user_id = ".(int)$this->id;
-        $this->db->query($this->db->getConnectionID(), $query);
-        $result = $this->db->getRow();
+        $sql->query($sql->getConnectionID());
+        $result = $sql->getRow(true);
         
         $real_date = date("d.m.Y", $result);
         return $real_date;
