@@ -1,10 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  * Класс пользователя. Создаётся каждый раз при авторизации конкретного пользователя.
@@ -32,6 +27,7 @@ class User {
      */
     public function __construct($id) {
         global $layer;
+
         //инициализируем класс с ID пользователя        
         $this->user_id  =   (int)$id;
         
@@ -55,7 +51,7 @@ class User {
      */
     public static function exists(int $id) {
         
-        $query = 'SELECT user_id FROM users WHERE user_id = ?';
+        $query = 'SELECT user_id FROM '.USERS_TABLE.' WHERE user_id = ?';
         global $sql;
         $sql->setQuery($query);
         $stmt = $sql->prepare($sql->getConnectionID());
@@ -93,7 +89,7 @@ class User {
         
         global $sql;
         //проверяем, имеется ли пользователь с такими данными    
-        $query = 'SELECT user_id FROM users WHERE login = ? AND password = ?';
+        $query = 'SELECT user_id FROM '.USERS_TABLE.' WHERE login = ? AND password = ?';
         
         $sql->setQuery($query);
         $stmt = $sql->prepare($sql->getConnectionID());
@@ -124,7 +120,7 @@ class User {
         
         //если в id передан не ноль, значит зашёл не анонимный пользователь
         if ($id !== 0) {
-            $query = 'SELECT login, password FROM users WHERE user_id = ?';
+            $query = 'SELECT login, password FROM '.USERS_TABLE.' WHERE user_id = ?';
             
             global $sql;
             $sql->setQuery($query);
@@ -154,7 +150,7 @@ class User {
             $id = $this->user_id;
         }
         
-        $query = "SELECT group_id FROM users WHERE user_id = ".(int)$id;
+        $query = "SELECT group_id FROM ".USERS_TABLE." WHERE user_id = ".(int)$id;
         $this->db->query($this->db->getConnectionId(), $query);
         
         $result = $this->db->getRow();
@@ -167,7 +163,7 @@ class User {
             return false;
         }
         
-        $query = "SELECT date_registered FROM users WHERE user_id = ".(int)$this->id;
+        $query = "SELECT date_registered FROM ".USERS_TABLE." WHERE user_id = ".(int)$this->id;
         $this->db->query($this->db->getConnectionID(), $query);
         $result = $this->db->getRow();
         
